@@ -1,0 +1,37 @@
+{
+  "name": "hermes-",
+  "version": "1.0.0",
+  "description": "一个hermes控制台项目",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SixTHWoLf/hermes-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SixTHWoLf/hermes-/issues"
+  },
+  "homepage": "https://github.com/SixTHWoLf/hermes-#readme",
+  "dependencies": {
+    "js-yaml": "^4.1.1",
+    "next": "^16.2.4",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^6.0.3"
+  }
+}
