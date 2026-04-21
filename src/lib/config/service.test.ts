@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ConfigService } from './service';
+import * as fs from 'fs';
 
-// Mock fs module - services only need validation which doesn't use fs
+// Mock fs module
 vi.mock('fs', () => ({
-  existsSync: vi.fn().mockReturnValue(true),
+  existsSync: vi.fn(),
   mkdirSync: vi.fn(),
   readFileSync: vi.fn(),
   writeFileSync: vi.fn(),
@@ -14,10 +15,118 @@ vi.mock('fs', () => ({
 
 describe('ConfigService', () => {
   let service: ConfigService;
+  let mockFs: any;
 
   beforeEach(() => {
     service = new ConfigService();
     vi.clearAllMocks();
+    mockFs = vi.mocked(fs);
+  });
+
+  describe('readConfig', () => {
+    it('should create default config when file does not exist', async () => {
+      mockFs.existsSync.mockReturnValue(false);
+
+      const config = await service.readConfig();
+
+      expect(config).toEqual({});
+      expect(mockFs.mkdirSync).toHaveBeenCalled();
+      expect(mockFs.writeFileSync).toHaveBeenCalled();
+    });
+
+    it('should read existing config file', async () => {
+      mockFs.existsSync.mockReturnValue(true);
+      mockFs.readFileSync.mockReturnValue('model:\n  provider: openai');
+
+      const config = await service.readConfig();
+
+      expect(config).toEqual({ model: { provider: 'openai' } });
+    });
+
+    it('should handle empty file content', async () => {
+      mockFs.existsSync.mockReturnValue(true);
+      mockFs.readFileSync.mockReturnValue('');
+
+      const config = await service.readConfig();
+
+      expect(config).toEqual({});
+    });
+
+    it('should throw error on read failure', async () => {
+      mockFs.existsSync.mockReturnValue(true);
+      mockFs.readFileSync.mockImplementation(() => {
+        throw new Error('Permission denied');
+      });
+
+      await expect(service.readConfig()).rejects.toThrow('Failed to read config');
+    });
+  });
+
+  describe('writeConfig', () => {
+    it('should create directory if it does not exist', async () => {
+      mockFs.existsSync.mockReturnValue(false);
+
+      await service.writeConfig({ model: { provider: 'openai' } });
+
+      expect(mockFs.mkdirSync).toHaveBeenCalled();
+      expect(mockFs.writeFileSync).toHaveBeenCalled();
+    });
+
+    it('should write config to file', async () => {
+      mockFs.existsSync.mockReturnValue(true);
+
+      await service.writeConfig({ model: { provider: 'anthropic' } });
+
+      expect(mockFs.writeFileSync).toHaveBeenCalled();
+    });
+
+    it('should throw error on write failure', async () => {
+      mockFs.existsSync.mockReturnValue(true);
+      mockFs.writeFileSync.mockImplementation(() => {
+        throw new Error('Disk full');
+      });
+
+      await expect(service.writeConfig({})).rejects.toThrow('Failed to write config');
+    });
+  });
+
+  describe('getConfig', () => {
+    it('should return cached config if available', async () => {
+      mockFs.existsSync.mockReturnValue(true);
+      mockFs.readFileSync.mockReturnValue('model:\n  provider: openai');
+
+      await service.readConfig();
+      const config = await service.getConfig();
+
+      expect(config).toEqual({ model: { provider: 'openai' } });
+      // readFileSync should not be called again since config is cached
+      expect(mockFs.readFileSync).toHaveBeenCalledTimes(1);
+    });
+
+    it('should read config if not cached', async () => {
+      mockFs.existsSync.mockReturnValue(true);
+      mockFs.readFileSync.mockReturnValue('model:\n  provider: openai');
+
+      // Use getConfig directly without calling readConfig first
+      const config = await service.getConfig();
+
+      expect(config).toEqual({ model: { provider: 'openai' } });
+    });
+  });
+
+  describe('updateConfig', () => {
+    it('should merge updates with existing config', async () => {
+      mockFs.existsSync.mockReturnValue(true);
+      mockFs.readFileSync.mockReturnValue('model:\n  provider: openai');
+      mockFs.writeFileSync.mockReturnValue(undefined);
+
+      await service.readConfig();
+
+      const updated = await service.updateConfig({ model: { provider: 'openai', default_model: 'gpt-4' } });
+
+      expect(updated.model?.provider).toBe('openai');
+      expect(updated.model?.default_model).toBe('gpt-4');
+    });
   });
 
   describe('validateConfig', () => {
