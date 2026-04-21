@@ -1,0 +1,19 @@
+Test Coverage Report - 2026-04-21
+==================================
+
+Test Results: 81 passed, 0 failed
+
+Coverage Summary:
+-----------------
+Statements   : 81.05% ( 184/227 )
+Branches     : 70.9%  ( 78/110 )
+Functions    : 89.13% ( 41/46 )
+Lines        : 80.63% ( 179/222 )
+
+Files with Low Coverage:
+------------------------
+- lib/config/service.ts: 49.09% statements, 69.38% branches
+- lib/config/backup.ts: 79.03% statements, 57.14% branches
+
+Note: Branch coverage (70.9%) is below 80% threshold.
+Recommendation: Add more tests for edge cases in service.ts and backup.ts
