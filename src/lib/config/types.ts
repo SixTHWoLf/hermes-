@@ -77,6 +77,7 @@ export interface CodeExecutionConfig {
 export interface MemoryConfig {
   enabled?: boolean;
   memory_limit?: string;
+  strategy?: 'recent' | 'important' | 'summary';
 }
 
 export interface HermesConfig {
