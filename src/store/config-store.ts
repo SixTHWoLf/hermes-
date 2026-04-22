@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { HermesConfig, ModelConfig, AgentConfig, TerminalConfig } from '@/types/config';
+import type { HermesConfig, ModelConfig, AgentConfig, TerminalConfig, MessagePlatformConfig } from '@/types/config';
 import { defaultHermesConfig } from '@/types/config';
 
 interface ConfigStore {
@@ -10,7 +10,7 @@ interface ConfigStore {
   // Dirty state (unsaved changes)
   isDirty: boolean;
   // Active tab
-  activeTab: 'model' | 'agent' | 'terminal';
+  activeTab: 'model' | 'agent' | 'terminal' | 'integration';
   // Preview mode
   showPreview: boolean;
 
@@ -19,7 +19,8 @@ interface ConfigStore {
   updateModelConfig: (model: Partial<ModelConfig>) => void;
   updateAgentConfig: (agent: Partial<AgentConfig>) => void;
   updateTerminalConfig: (terminal: Partial<TerminalConfig>) => void;
-  setActiveTab: (tab: 'model' | 'agent' | 'terminal') => void;
+  updateIntegrationConfig: (integration: Partial<MessagePlatformConfig>) => void;
+  setActiveTab: (tab: 'model' | 'agent' | 'terminal' | 'integration') => void;
   setShowPreview: (show: boolean) => void;
   resetConfig: () => void;
   markAsSaved: () => void;
@@ -58,6 +59,14 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
     config: {
       ...state.config,
       terminal: { ...(state.config.terminal || defaultHermesConfig.terminal!), ...terminal },
+    },
+    isDirty: true,
+  })),
+
+  updateIntegrationConfig: (integration) => set((state) => ({
+    config: {
+      ...state.config,
+      message_platform: { ...(state.config.message_platform || defaultHermesConfig.message_platform!), ...integration },
     },
     isDirty: true,
   })),

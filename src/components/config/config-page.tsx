@@ -4,6 +4,7 @@ import { useConfigStore } from '@/store/config-store';
 import { ModelConfig } from '@/components/config/model-config';
 import { AgentConfig } from '@/components/config/agent-config';
 import { TerminalConfig } from '@/components/config/terminal-config';
+import { IntegrationConfig } from '@/components/config/integration-config';
 import { ConfigPreview } from '@/components/config/config-preview';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -58,6 +59,8 @@ export function ConfigPage() {
         return <AgentConfig />;
       case 'terminal':
         return <TerminalConfig />;
+      case 'integration':
+        return <IntegrationConfig />;
       default:
         return null;
     }
