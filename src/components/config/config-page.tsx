@@ -4,6 +4,11 @@ import { useConfigStore } from '@/store/config-store';
 import { ModelConfig } from '@/components/config/model-config';
 import { AgentConfig } from '@/components/config/agent-config';
 import { TerminalConfig } from '@/components/config/terminal-config';
+import { BrowserConfig } from '@/components/config/browser-config';
+import { DisplayConfig } from '@/components/config/display-config';
+import { CodeExecutionConfig } from '@/components/config/code-execution-config';
+import { SecurityConfig } from '@/components/config/security-config';
+import { MemoryConfig } from '@/components/config/memory-config';
 import { IntegrationConfig } from '@/components/config/integration-config';
 import { ConfigPreview } from '@/components/config/config-preview';
 import { Button } from '@/components/ui/button';
@@ -22,9 +27,6 @@ export function ConfigPage() {
     resetConfig,
     setShowPreview,
     markAsSaved,
-    updateModelConfig,
-    updateAgentConfig,
-    updateTerminalConfig,
   } = useConfigStore();
 
   const handleSave = async () => {
@@ -59,6 +61,16 @@ export function ConfigPage() {
         return <AgentConfig />;
       case 'terminal':
         return <TerminalConfig />;
+      case 'browser':
+        return <BrowserConfig />;
+      case 'display':
+        return <DisplayConfig />;
+      case 'code_execution':
+        return <CodeExecutionConfig />;
+      case 'security':
+        return <SecurityConfig />;
+      case 'memory':
+        return <MemoryConfig />;
       case 'integration':
         return <IntegrationConfig />;
       default:
