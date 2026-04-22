@@ -120,6 +120,57 @@ export class ConfigService {
       }
     }
 
+    // Validate browser config
+    if (config.browser) {
+      if (config.browser.inactivity_timeout !== undefined && config.browser.inactivity_timeout < 0) {
+        errors.push('browser.inactivity_timeout must be non-negative');
+      }
+      if (config.browser.cdp_url && !this.isValidUrl(config.browser.cdp_url)) {
+        errors.push('browser.cdp_url must be a valid URL');
+      }
+    }
+
+    // Validate display config
+    if (config.display) {
+      if (config.display.personality_select && typeof config.display.personality_select !== 'string') {
+        errors.push('display.personality_select must be a string');
+      }
+    }
+
+    // Validate TTS config
+    if (config.tts) {
+      if (config.tts.provider && !['edge', 'elevenlabs', 'openai'].includes(config.tts.provider)) {
+        errors.push(`tts.provider must be one of: edge, elevenlabs, openai`);
+      }
+    }
+
+    // Validate STT config
+    if (config.stt) {
+      if (config.stt.provider && !['local', 'openai', 'mistral'].includes(config.stt.provider)) {
+        errors.push(`stt.provider must be one of: local, openai, mistral`);
+      }
+    }
+
+    // Validate code execution config
+    if (config.code_execution) {
+      if (config.code_execution.mode && !['project', 'sandbox'].includes(config.code_execution.mode)) {
+        errors.push('code_execution.mode must be "project" or "sandbox"');
+      }
+      if (config.code_execution.timeout !== undefined && config.code_execution.timeout < 1) {
+        errors.push('code_execution.timeout must be at least 1');
+      }
+    }
+
+    // Validate memory config
+    if (config.memory) {
+      if (config.memory.memory_limit) {
+        const memMatch = config.memory.memory_limit.match(/^(\d+)(G|M|K)$/);
+        if (!memMatch) {
+          errors.push('memory.memory_limit must be in format like "2G", "512M", or "256K"');
+        }
+      }
+    }
+
     return {
       valid: errors.length === 0,
       errors: errors.length > 0 ? errors : undefined,
