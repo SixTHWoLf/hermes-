@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import type { HermesConfig, ModelConfig, AgentConfig, TerminalConfig, BrowserConfig, DisplayConfig, CodeExecutionConfig, SecurityConfig, MemoryConfig, MessagePlatformConfig } from '@/types/config';
+import type { HermesConfig, ModelConfig, AgentConfig, TerminalConfig, BrowserConfig, DisplayConfig, CodeExecutionConfig, SecurityConfig, MemoryConfig, AuxiliaryConfig, MessagePlatformConfig } from '@/types/config';
 import { defaultHermesConfig } from '@/types/config';
 
-type TabType = 'model' | 'agent' | 'terminal' | 'browser' | 'display' | 'code_execution' | 'security' | 'memory';
+type TabType = 'model' | 'agent' | 'terminal' | 'browser' | 'display' | 'code_execution' | 'security' | 'memory' | 'auxiliary' | 'integration';
 
 interface ConfigStore {
   // Current configuration
@@ -26,6 +26,7 @@ interface ConfigStore {
   updateCodeExecutionConfig: (codeExecution: Partial<CodeExecutionConfig>) => void;
   updateSecurityConfig: (security: Partial<SecurityConfig>) => void;
   updateMemoryConfig: (memory: Partial<MemoryConfig>) => void;
+  updateAuxiliaryConfig: (auxiliary: Partial<AuxiliaryConfig>) => void;
   updateIntegrationConfig: (integration: Partial<MessagePlatformConfig>) => void;
   setActiveTab: (tab: TabType) => void;
   setShowPreview: (show: boolean) => void;
@@ -106,6 +107,14 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
     config: {
       ...state.config,
       memory: { ...(state.config.memory || defaultHermesConfig.memory!), ...memory },
+    },
+    isDirty: true,
+  })),
+
+  updateAuxiliaryConfig: (auxiliary) => set((state) => ({
+    config: {
+      ...state.config,
+      auxiliary: { ...(state.config.auxiliary || defaultHermesConfig.auxiliary!), ...auxiliary },
     },
     isDirty: true,
   })),

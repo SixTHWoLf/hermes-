@@ -54,6 +54,16 @@ export interface MemoryConfig {
   strategy: 'recent' | 'important' | 'summary';
 }
 
+export interface AuxiliaryConfig {
+  vision: boolean;
+  web_extract: boolean;
+  compression: boolean;
+  session_search: boolean;
+  skills_hub: boolean;
+  mcp: Record<string, unknown>;
+  memory: Record<string, unknown>;
+}
+
 export interface DiscordConfig {
   enabled: boolean;
   bot_token?: string;
@@ -108,6 +118,7 @@ export interface HermesConfig {
   code_execution?: CodeExecutionConfig;
   security?: SecurityConfig;
   memory?: MemoryConfig;
+  auxiliary?: AuxiliaryConfig;
   message_platform?: MessagePlatformConfig;
 }
 
@@ -166,6 +177,16 @@ export const defaultMemoryConfig: MemoryConfig = {
   strategy: 'recent',
 };
 
+export const defaultAuxiliaryConfig: AuxiliaryConfig = {
+  vision: true,
+  web_extract: true,
+  compression: true,
+  session_search: true,
+  skills_hub: true,
+  mcp: {},
+  memory: {},
+};
+
 export const defaultDiscordConfig: DiscordConfig = {
   enabled: false,
   bot_token: '',
@@ -220,5 +241,6 @@ export const defaultHermesConfig: HermesConfig = {
   code_execution: defaultCodeExecutionConfig,
   security: defaultSecurityConfig,
   memory: defaultMemoryConfig,
+  auxiliary: defaultAuxiliaryConfig,
   message_platform: defaultMessagePlatformConfig,
 };
