@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { useConfigStore } from '@/store/config-store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 const PROVIDER_OPTIONS = [
   { value: 'minimax-cn', label: 'MiniMax CN' },
@@ -21,9 +23,36 @@ const MODEL_OPTIONS = [
   { value: 'nous-hermes-2', label: 'Nous Hermes 2' },
 ];
 
+function isValidUrl(string: string): boolean {
+  if (!string) return true; // Empty is ok (optional field)
+  try {
+    new URL(string);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function ModelConfig() {
   const { config, updateModelConfig } = useConfigStore();
   const model = config.model || { default_model: 'minimax-cn', provider: 'minimax-cn', base_url: '', api_key: '' };
+
+  const [urlError, setUrlError] = useState<string | null>(null);
+
+  const handleUrlBlur = () => {
+    if (model.base_url && !isValidUrl(model.base_url)) {
+      setUrlError('请输入有效的 URL 格式');
+    } else {
+      setUrlError(null);
+    }
+  };
+
+  const handleApiKeyBlur = () => {
+    // Basic validation: API key should be at least 10 chars if not empty
+    if (model.api_key && model.api_key.length < 10) {
+      // Just show hint, not error - key format varies by provider
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -79,23 +108,53 @@ export function ModelConfig() {
 
             <div className="space-y-2">
               <Label htmlFor="base-url">Base URL</Label>
-              <Input
-                id="base-url"
-                value={model.base_url || ''}
-                onChange={(e) => updateModelConfig({ base_url: e.target.value })}
-                placeholder="https://api.example.com"
-              />
+              <div className="relative">
+                <Input
+                  id="base-url"
+                  value={model.base_url || ''}
+                  onChange={(e) => updateModelConfig({ base_url: e.target.value })}
+                  onBlur={handleUrlBlur}
+                  placeholder="https://api.example.com"
+                  className={urlError ? 'border-destructive pr-10' : 'pr-10'}
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  {urlError ? (
+                    <AlertCircle className="h-4 w-4 text-destructive" />
+                  ) : model.base_url && isValidUrl(model.base_url) ? (
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  ) : null}
+                </div>
+              </div>
+              {urlError ? (
+                <p className="text-xs text-destructive">{urlError}</p>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  用于自定义 API 端点（可选）
+                </p>
+              )}
             </div>
 
             <div className="space-y-2 col-span-2">
               <Label htmlFor="api-key">API Key</Label>
-              <Input
-                id="api-key"
-                type="password"
-                value={model.api_key || ''}
-                onChange={(e) => updateModelConfig({ api_key: e.target.value })}
-                placeholder="输入 API Key"
-              />
+              <div className="relative">
+                <Input
+                  id="api-key"
+                  type="password"
+                  value={model.api_key || ''}
+                  onChange={(e) => updateModelConfig({ api_key: e.target.value })}
+                  onBlur={handleApiKeyBlur}
+                  placeholder="输入 API Key"
+                  className="pr-10"
+                />
+                {model.api_key && model.api_key.length >= 10 && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                至少需要 10 个字符
+              </p>
             </div>
           </div>
         </CardContent>

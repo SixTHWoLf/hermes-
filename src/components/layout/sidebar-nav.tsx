@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useConfigStore } from '@/store/config-store';
 import { Badge } from '@/components/ui/badge';
 
@@ -15,27 +16,54 @@ const NAV_ITEMS = [
 ] as const;
 
 export function SidebarNav() {
-  const { activeTab, setActiveTab, isDirty } = useConfigStore();
+  const { activeTab, setActiveTab } = useConfigStore();
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const currentIndex = NAV_ITEMS.findIndex(item => item.id === activeTab);
+
+      if (e.key === 'ArrowDown' && currentIndex < NAV_ITEMS.length - 1) {
+        e.preventDefault();
+        setActiveTab(NAV_ITEMS[currentIndex + 1].id);
+      } else if (e.key === 'ArrowUp' && currentIndex > 0) {
+        e.preventDefault();
+        setActiveTab(NAV_ITEMS[currentIndex - 1].id);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        setActiveTab(NAV_ITEMS[0].id);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        setActiveTab(NAV_ITEMS[NAV_ITEMS.length - 1].id);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab, setActiveTab]);
 
   return (
-    <nav className="space-y-1">
+    <nav className="space-y-1" role="tablist" aria-label="配置模块导航">
       {NAV_ITEMS.map((item) => (
         <button
           key={item.id}
+          role="tab"
+          aria-selected={activeTab === item.id}
+          tabIndex={activeTab === item.id ? 0 : -1}
           onClick={() => setActiveTab(item.id)}
           className={`
-            w-full text-left px-4 py-3 rounded-lg transition-colors
+            w-full text-left px-4 py-3 rounded-lg transition-all duration-200
             ${activeTab === item.id
-              ? 'bg-primary text-primary-foreground'
+              ? 'bg-primary text-primary-foreground shadow-md'
               : 'hover:bg-muted'
             }
           `}
         >
           <div className="flex items-center justify-between">
             <span className="font-medium">{item.label}</span>
-            {isDirty && activeTab === item.id && (
-              <Badge variant="secondary" className="text-xs">
-                未保存
+            {activeTab === item.id && (
+              <Badge variant="secondary" className="text-xs animate-pulse">
+                当前
               </Badge>
             )}
           </div>
@@ -44,6 +72,9 @@ export function SidebarNav() {
           </p>
         </button>
       ))}
+      <p className="text-xs text-muted-foreground mt-4 px-4">
+        使用 ↑↓ 键导航
+      </p>
     </nav>
   );
 }
