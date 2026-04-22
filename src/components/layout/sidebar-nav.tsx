@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { id: 'model', label: '模型配置', description: 'Model Configuration' },
   { id: 'agent', label: 'Agent 配置', description: 'Agent Configuration' },
   { id: 'terminal', label: '终端配置', description: 'Terminal Configuration' },
+  { id: 'integration', label: '平台集成', description: 'Platform Integration' },
 ] as const;
 
 export function SidebarNav() {
