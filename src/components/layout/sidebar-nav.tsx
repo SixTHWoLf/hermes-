@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { id: 'code_execution', label: '代码执行', description: 'Code Execution' },
   { id: 'security', label: '安全配置', description: 'Security Configuration' },
   { id: 'memory', label: '记忆配置', description: 'Memory Configuration' },
+  { id: 'integration', label: '平台集成', description: 'Platform Integration' },
 ] as const;
 
 export function SidebarNav() {

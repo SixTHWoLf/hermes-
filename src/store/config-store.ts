@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { HermesConfig, ModelConfig, AgentConfig, TerminalConfig, BrowserConfig, DisplayConfig, CodeExecutionConfig, SecurityConfig, MemoryConfig } from '@/types/config';
+import type { HermesConfig, ModelConfig, AgentConfig, TerminalConfig, BrowserConfig, DisplayConfig, CodeExecutionConfig, SecurityConfig, MemoryConfig, MessagePlatformConfig } from '@/types/config';
 import { defaultHermesConfig } from '@/types/config';
 
 type TabType = 'model' | 'agent' | 'terminal' | 'browser' | 'display' | 'code_execution' | 'security' | 'memory';
@@ -26,6 +26,7 @@ interface ConfigStore {
   updateCodeExecutionConfig: (codeExecution: Partial<CodeExecutionConfig>) => void;
   updateSecurityConfig: (security: Partial<SecurityConfig>) => void;
   updateMemoryConfig: (memory: Partial<MemoryConfig>) => void;
+  updateIntegrationConfig: (integration: Partial<MessagePlatformConfig>) => void;
   setActiveTab: (tab: TabType) => void;
   setShowPreview: (show: boolean) => void;
   resetConfig: () => void;
@@ -105,6 +106,14 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
     config: {
       ...state.config,
       memory: { ...(state.config.memory || defaultHermesConfig.memory!), ...memory },
+    },
+    isDirty: true,
+  })),
+
+  updateIntegrationConfig: (integration) => set((state) => ({
+    config: {
+      ...state.config,
+      message_platform: { ...(state.config.message_platform || defaultHermesConfig.message_platform!), ...integration },
     },
     isDirty: true,
   })),

@@ -9,6 +9,7 @@ import { DisplayConfig } from '@/components/config/display-config';
 import { CodeExecutionConfig } from '@/components/config/code-execution-config';
 import { SecurityConfig } from '@/components/config/security-config';
 import { MemoryConfig } from '@/components/config/memory-config';
+import { IntegrationConfig } from '@/components/config/integration-config';
 import { ConfigPreview } from '@/components/config/config-preview';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -70,6 +71,8 @@ export function ConfigPage() {
         return <SecurityConfig />;
       case 'memory':
         return <MemoryConfig />;
+      case 'integration':
+        return <IntegrationConfig />;
       default:
         return null;
     }
