@@ -8,7 +8,7 @@ interface MonitoringStore {
   connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error';
   activeTab: MonitoringTab;
   agents: Agent[];
-  resourceUsage: Map<string, ResourceUsage[]>;
+  resourceUsage: Record<string, ResourceUsage[]>;
   alertRules: AlertRuleType[];
   alerts: Alert[];
 
@@ -25,6 +25,7 @@ interface MonitoringStore {
   addAlert: (alert: Alert) => void;
   acknowledgeAlert: (alertId: string) => void;
   clearAlerts: () => void;
+  resetStore: () => void;
 }
 
 export const useMonitoringStore = create<MonitoringStore>((set) => ({
@@ -32,7 +33,7 @@ export const useMonitoringStore = create<MonitoringStore>((set) => ({
   connectionStatus: 'disconnected',
   activeTab: 'overview',
   agents: [],
-  resourceUsage: new Map(),
+  resourceUsage: {},
   alertRules: [
     { id: '1', name: 'CPU 高负载', metric: 'cpu', threshold: 80, enabled: true, createdAt: new Date().toISOString() },
     { id: '2', name: '内存高负载', metric: 'memory', threshold: 85, enabled: true, createdAt: new Date().toISOString() },
@@ -52,10 +53,13 @@ export const useMonitoringStore = create<MonitoringStore>((set) => ({
   }),
   setAgents: (agents) => set({ agents }),
   addResourceUsage: (agentId, usage) => set((state) => {
-    const newMap = new Map(state.resourceUsage);
-    const existing = newMap.get(agentId) || [];
-    newMap.set(agentId, [...existing.slice(-99), usage]);
-    return { resourceUsage: newMap };
+    const existing = state.resourceUsage[agentId] || [];
+    return {
+      resourceUsage: {
+        ...state.resourceUsage,
+        [agentId]: [...existing.slice(-143), usage],
+      },
+    };
   }),
   setAlertRules: (alertRules) => set({ alertRules }),
   addAlertRule: (rule) => set((state) => ({
@@ -74,4 +78,13 @@ export const useMonitoringStore = create<MonitoringStore>((set) => ({
     alerts: state.alerts.map(a => a.id === alertId ? { ...a, acknowledged: true } : a),
   })),
   clearAlerts: () => set({ alerts: [] }),
+  resetStore: () => set({
+    isConnected: false,
+    connectionStatus: 'disconnected',
+    activeTab: 'overview',
+    agents: [],
+    resourceUsage: {},
+    alertRules: [],
+    alerts: [],
+  }),
 }));

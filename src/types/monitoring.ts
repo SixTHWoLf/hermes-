@@ -42,7 +42,7 @@ export interface Alert {
 
 export interface MonitoringState {
   agents: Agent[];
-  resourceUsage: Map<string, ResourceUsage[]>;
+  resourceUsage: Record<string, ResourceUsage[]>;
   alertRules: AlertRule[];
   alerts: Alert[];
   isConnected: boolean;

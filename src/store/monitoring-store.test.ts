@@ -1,6 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { useMonitoringStore } from '@/store/monitoring-store';
 import type { Agent, ResourceUsage, AlertRule, Alert } from '@/types/monitoring';
+
+beforeEach(() => {
+  useMonitoringStore.getState().resetStore();
+});
 
 describe('useMonitoringStore', () => {
   it('should set agents', () => {

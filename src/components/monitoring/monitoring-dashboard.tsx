@@ -211,7 +211,7 @@ function ResourcesPanel() {
 
   // Aggregate resource usage across all agents
   const allUsage: ResourceUsage[] = [];
-  resourceUsage.forEach((usageList) => {
+  Object.values(resourceUsage).forEach((usageList) => {
     allUsage.push(...usageList);
   });
   
