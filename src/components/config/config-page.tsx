@@ -15,7 +15,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { RotateCcw, Save, Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
+import { RotateCcw, Save, Eye, EyeOff, Activity } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function ConfigPage() {
@@ -86,6 +87,13 @@ export function ConfigPage() {
           <Badge variant="outline" className="text-xs">
             v0.1.0
           </Badge>
+          <Separator orientation="vertical" className="h-6" />
+          <Link href="/monitoring">
+            <Button variant="ghost" size="sm">
+              <Activity className="h-4 w-4 mr-1" />
+              监控
+            </Button>
+          </Link>
         </div>
         <div className="flex items-center gap-2">
           <Button
