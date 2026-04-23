@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "Hermes Console",
+    "version": "v0.1.0"
+  },
+  "nav": {
+    "model": "模型配置",
+    "agent": "Agent 配置",
+    "terminal": "终端配置",
+    "browser": "浏览器配置",
+    "display": "显示配置",
+    "codeExecution": "代码执行",
+    "security": "安全配置",
+    "memory": "记忆配置",
+    "integration": "平台集成"
+  },
+  "actions": {
+    "preview": "预览",
+    "hidePreview": "隐藏预览",
+    "reset": "重置",
+    "save": "保存",
+    "unsaved": "未保存"
+  },
+  "messages": {
+    "saveSuccess": "配置已保存",
+    "saveFailed": "保存失败，请重试",
+    "resetSuccess": "配置已重置",
+    "resetFailed": "重置失败，请重试"
+  },
+  "model": {
+    "defaultModel": "默认模型",
+    "defaultModelDesc": "选择默认使用的 AI 模型",
+    "providerConfig": "Provider 配置",
+    "providerConfigDesc": "AI Provider 连接信息",
+    "providerType": "Provider 类型",
+    "baseUrl": "Base URL",
+    "apiKey": "API Key",
+    "apiKeyPlaceholder": "输入 API Key"
+  },
+  "tabs": {
+    "model": "模型",
+    "agent": "Agent",
+    "terminal": "终端",
+    "browser": "浏览器",
+    "display": "显示",
+    "code_execution": "代码执行",
+    "security": "安全",
+    "memory": "记忆",
+    "integration": "集成"
+  }
+}

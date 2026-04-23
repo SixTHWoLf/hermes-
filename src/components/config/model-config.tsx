@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useConfigStore } from '@/store/config-store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -22,6 +23,7 @@ const MODEL_OPTIONS = [
 ];
 
 export function ModelConfig() {
+  const { t } = useTranslation();
   const { config, updateModelConfig } = useConfigStore();
   const model = config.model || { default_model: 'minimax-cn', provider: 'minimax-cn', base_url: '', api_key: '' };
 
@@ -29,8 +31,8 @@ export function ModelConfig() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>默认模型</CardTitle>
-          <CardDescription>选择默认使用的 AI 模型</CardDescription>
+          <CardTitle>{t('model.defaultModel')}</CardTitle>
+          <CardDescription>{t('model.defaultModelDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Select
@@ -53,13 +55,13 @@ export function ModelConfig() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Provider 配置</CardTitle>
-          <CardDescription>AI Provider 连接信息</CardDescription>
+          <CardTitle>{t('model.providerConfig')}</CardTitle>
+          <CardDescription>{t('model.providerConfigDesc')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="provider">Provider 类型</Label>
+              <Label htmlFor="provider">{t('model.providerType')}</Label>
               <Select
                 value={model.provider}
                 onValueChange={(value) => updateModelConfig({ provider: value || 'minimax-cn' })}
@@ -78,7 +80,7 @@ export function ModelConfig() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="base-url">Base URL</Label>
+              <Label htmlFor="base-url">{t('model.baseUrl')}</Label>
               <Input
                 id="base-url"
                 value={model.base_url || ''}
@@ -88,13 +90,13 @@ export function ModelConfig() {
             </div>
 
             <div className="space-y-2 col-span-2">
-              <Label htmlFor="api-key">API Key</Label>
+              <Label htmlFor="api-key">{t('model.apiKey')}</Label>
               <Input
                 id="api-key"
                 type="password"
                 value={model.api_key || ''}
                 onChange={(e) => updateModelConfig({ api_key: e.target.value })}
-                placeholder="输入 API Key"
+                placeholder={t('model.apiKeyPlaceholder')}
               />
             </div>
           </div>

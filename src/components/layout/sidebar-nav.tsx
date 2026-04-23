@@ -1,21 +1,23 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useConfigStore } from '@/store/config-store';
 import { Badge } from '@/components/ui/badge';
 
 const NAV_ITEMS = [
-  { id: 'model', label: '模型配置', description: 'Model Configuration' },
-  { id: 'agent', label: 'Agent 配置', description: 'Agent Configuration' },
-  { id: 'terminal', label: '终端配置', description: 'Terminal Configuration' },
-  { id: 'browser', label: '浏览器配置', description: 'Browser Configuration' },
-  { id: 'display', label: '显示配置', description: 'Display Configuration' },
-  { id: 'code_execution', label: '代码执行', description: 'Code Execution' },
-  { id: 'security', label: '安全配置', description: 'Security Configuration' },
-  { id: 'memory', label: '记忆配置', description: 'Memory Configuration' },
-  { id: 'integration', label: '平台集成', description: 'Platform Integration' },
+  { id: 'model' },
+  { id: 'agent' },
+  { id: 'terminal' },
+  { id: 'browser' },
+  { id: 'display' },
+  { id: 'code_execution' },
+  { id: 'security' },
+  { id: 'memory' },
+  { id: 'integration' },
 ] as const;
 
 export function SidebarNav() {
+  const { t } = useTranslation();
   const { activeTab, setActiveTab, isDirty } = useConfigStore();
 
   return (
@@ -33,15 +35,15 @@ export function SidebarNav() {
           `}
         >
           <div className="flex items-center justify-between">
-            <span className="font-medium">{item.label}</span>
+            <span className="font-medium">{t(`nav.${item.id}`)}</span>
             {isDirty && activeTab === item.id && (
               <Badge variant="secondary" className="text-xs">
-                未保存
+                {t('actions.unsaved')}
               </Badge>
             )}
           </div>
           <p className={`text-xs mt-0.5 ${activeTab === item.id ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-            {item.description}
+            {t(`nav.${item.id}`)}
           </p>
         </button>
       ))}

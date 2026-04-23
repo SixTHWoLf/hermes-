@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "Hermes Console",
+    "version": "v0.1.0"
+  },
+  "nav": {
+    "model": "Model Configuration",
+    "agent": "Agent Configuration",
+    "terminal": "Terminal Configuration",
+    "browser": "Browser Configuration",
+    "display": "Display Configuration",
+    "codeExecution": "Code Execution",
+    "security": "Security Configuration",
+    "memory": "Memory Configuration",
+    "integration": "Platform Integration"
+  },
+  "actions": {
+    "preview": "Preview",
+    "hidePreview": "Hide Preview",
+    "reset": "Reset",
+    "save": "Save",
+    "unsaved": "Unsaved"
+  },
+  "messages": {
+    "saveSuccess": "Configuration saved",
+    "saveFailed": "Save failed, please retry",
+    "resetSuccess": "Configuration reset",
+    "resetFailed": "Reset failed, please retry"
+  },
+  "model": {
+    "defaultModel": "Default Model",
+    "defaultModelDesc": "Select the default AI model",
+    "providerConfig": "Provider Configuration",
+    "providerConfigDesc": "AI Provider connection information",
+    "providerType": "Provider Type",
+    "baseUrl": "Base URL",
+    "apiKey": "API Key",
+    "apiKeyPlaceholder": "Enter API Key"
+  },
+  "tabs": {
+    "model": "Model",
+    "agent": "Agent",
+    "terminal": "Terminal",
+    "browser": "Browser",
+    "display": "Display",
+    "code_execution": "Code Execution",
+    "security": "Security",
+    "memory": "Memory",
+    "integration": "Integration"
+  }
+}

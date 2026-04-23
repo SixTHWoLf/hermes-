@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useConfigStore } from '@/store/config-store';
 import { ModelConfig } from '@/components/config/model-config';
 import { AgentConfig } from '@/components/config/agent-config';
@@ -11,6 +12,7 @@ import { SecurityConfig } from '@/components/config/security-config';
 import { MemoryConfig } from '@/components/config/memory-config';
 import { IntegrationConfig } from '@/components/config/integration-config';
 import { ConfigPreview } from '@/components/config/config-preview';
+import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
@@ -19,6 +21,7 @@ import { RotateCcw, Save, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function ConfigPage() {
+  const { t } = useTranslation();
   const {
     activeTab,
     config,
@@ -38,19 +41,19 @@ export function ConfigPage() {
       });
 
       if (!response.ok) {
-        throw new Error('保存失败');
+        throw new Error(t('messages.saveFailed'));
       }
 
       markAsSaved();
-      toast.success('配置已保存');
+      toast.success(t('messages.saveSuccess'));
     } catch {
-      toast.error('保存失败，请重试');
+      toast.error(t('messages.saveFailed'));
     }
   };
 
   const handleReset = () => {
     resetConfig();
-    toast.info('配置已重置');
+    toast.info(t('messages.resetSuccess'));
   };
 
   const renderConfigContent = () => {
@@ -82,12 +85,14 @@ export function ConfigPage() {
     <div className="flex flex-col h-full">
       <header className="flex items-center justify-between px-6 py-4 border-b bg-card">
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold">Hermes Console</h1>
+          <h1 className="text-2xl font-bold">{t('app.title')}</h1>
           <Badge variant="outline" className="text-xs">
-            v0.1.0
+            {t('app.version')}
           </Badge>
         </div>
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <Separator orientation="vertical" className="h-6" />
           <Button
             variant="outline"
             size="sm"
@@ -96,12 +101,12 @@ export function ConfigPage() {
             {showPreview ? (
               <>
                 <EyeOff className="h-4 w-4 mr-1" />
-                隐藏预览
+                {t('actions.hidePreview')}
               </>
             ) : (
               <>
                 <Eye className="h-4 w-4 mr-1" />
-                预览
+                {t('actions.preview')}
               </>
             )}
           </Button>
@@ -113,7 +118,7 @@ export function ConfigPage() {
             disabled={!isDirty}
           >
             <RotateCcw className="h-4 w-4 mr-1" />
-            重置
+            {t('actions.reset')}
           </Button>
           <Button
             size="sm"
@@ -121,7 +126,7 @@ export function ConfigPage() {
             disabled={!isDirty}
           >
             <Save className="h-4 w-4 mr-1" />
-            保存
+            {t('actions.save')}
           </Button>
         </div>
       </header>
