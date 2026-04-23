@@ -3,8 +3,17 @@ package main
 import (
 	"log"
 
+	"github.com/SixTHWoLf/hermes-/backend/internal/api"
+	"github.com/SixTHWoLf/hermes-/backend/internal/middleware"
+	"github.com/SixTHWoLf/hermes-/backend/internal/websocket"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+)
+
+var (
+	wsHub        *websocket.Hub
+	pushService  *api.PushService
+	jwtSecret    string
 )
 
 func main() {
@@ -16,6 +25,20 @@ func main() {
 
 	// 创建 Gin 路由实例
 	r := gin.Default()
+
+	// 初始化 WebSocket Hub
+	wsHub = websocket.NewHub()
+	pushService = api.NewPushService(wsHub)
+
+	// 启动 Hub
+	go wsHub.Run()
+
+	// 获取 JWT secret
+	jwtSecret = viper.GetString("jwt.secret")
+	if jwtSecret == "" {
+		jwtSecret = "default-secret-change-in-production"
+		log.Println("警告: 使用默认 JWT secret，请修改配置文件")
+	}
 
 	// 注册路由
 	registerRoutes(r)
@@ -42,6 +65,7 @@ func initConfig() {
 			viper.SetDefault("server.mode", "debug")
 			viper.SetDefault("server.host", "0.0.0.0")
 			viper.SetDefault("server.port", "8080")
+			viper.SetDefault("jwt.secret", "default-secret-change-in-production")
 			log.Println("未找到配置文件，使用默认配置")
 		} else {
 			log.Fatalf("读取配置文件失败: %v", err)
@@ -58,6 +82,11 @@ func registerRoutes(r *gin.Engine) {
 		})
 	})
 
+	// WebSocket 路由
+	wsHandler := websocket.NewHandler(wsHub, jwtSecret, nil)
+	r.GET("/ws", wsHandler.HandleWebSocket)
+	r.GET("/ws/stats", wsHandler.HandleStats)
+
 	// API 路由组
 	api := r.Group("/api/v1")
 	{
@@ -67,5 +96,29 @@ func registerRoutes(r *gin.Engine) {
 				"message": "pong",
 			})
 		})
+
+		// 需要认证的路由示例
+		authenticated := api.Group("")
+		authenticated.Use(middleware.JWTAuth(jwtSecret))
+		{
+			// WebSocket 连接（通过 token 认证）
+			authenticated.GET("/ws/connect", wsHandler.HandleWebSocket)
+		}
+
+		// 推送通知 API（内部服务调用）
+		push := api.Group("/push")
+		{
+			// 配置变更通知
+			push.POST("/config-change", handleConfigChange)
+
+			// 备份进度通知
+			push.POST("/backup-progress", handleBackupProgress)
+
+			// 恢复进度通知
+			push.POST("/restore-progress", handleRestoreProgress)
+
+			// 消息平台状态通知
+			push.POST("/message-platform-status", handleMessagePlatformStatus)
+		}
 	}
 }
