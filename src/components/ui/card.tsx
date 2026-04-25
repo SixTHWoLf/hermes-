@@ -92,6 +92,109 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Stat Card Components
+function StatCard({
+  className,
+  size = "default",
+  loading = false,
+  ...props
+}: React.ComponentProps<"div"> & {
+  size?: "default" | "sm" | "lg"
+  loading?: boolean
+}) {
+  return (
+    <div
+      data-slot="stat-card"
+      data-size={size}
+      {...(loading && { "data-loading": true })}
+      className={cn(
+        "flex flex-col gap-3 rounded-xl bg-card p-4 text-card-foreground ring-1 ring-foreground/10 data-[size=lg]:p-6 data-[size=sm]:gap-2 data-[size=sm]:p-3",
+        loading && "animate-pulse",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function StatCardValue({
+  className,
+  trend,
+  ...props
+}: React.ComponentProps<"div"> & {
+  trend?: "up" | "down" | "neutral"
+}) {
+  return (
+    <div
+      data-slot="stat-card-value"
+      data-trend={trend}
+      className={cn(
+        "flex items-baseline gap-2",
+        trend === "up" && "text-emerald-500",
+        trend === "down" && "text-red-500",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function StatCardLabel({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="stat-card-label"
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  )
+}
+
+function StatCardTrend({
+  className,
+  variant = "neutral",
+  ...props
+}: React.ComponentProps<"div"> & {
+  variant?: "up" | "down" | "neutral"
+}) {
+  const icons = {
+    up: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
+    ),
+    down: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    ),
+    neutral: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+      </svg>
+    ),
+  }
+
+  return (
+    <div
+      data-slot="stat-card-trend"
+      data-variant={variant}
+      className={cn(
+        "inline-flex items-center gap-1 text-sm",
+        variant === "up" && "text-emerald-500",
+        variant === "down" && "text-red-500",
+        variant === "neutral" && "text-muted-foreground",
+        className
+      )}
+      {...props}
+    >
+      {icons[variant]}
+    </div>
+  )
+}
+
 export {
   Card,
   CardHeader,
@@ -100,4 +203,8 @@ export {
   CardAction,
   CardDescription,
   CardContent,
+  StatCard,
+  StatCardValue,
+  StatCardLabel,
+  StatCardTrend,
 }
